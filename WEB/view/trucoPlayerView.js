@@ -2,7 +2,7 @@ import { TrucoCard } from "./trucoCardView.js";
 
 class TrucoPlayer extends HTMLElement 
 {
-    constructor() 
+    constructor(path) 
     {
         super();
         this.attachShadow({ mode: 'open' }); // Abre el sombreador CSS
@@ -16,8 +16,8 @@ class TrucoPlayer extends HTMLElement
 
         this.playerName = document.createElement('h2');
         const playerAvatar = document.createElement('img');
-        playerAvatar.src = this.getAttribute('avatar-src');
-        playerAvatar.alt = this.getAttribute('name');
+        playerAvatar.src = path;
+        
         const deck = document.createElement('div');
         deck.classList.add('truco-card');
 

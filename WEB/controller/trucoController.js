@@ -119,6 +119,20 @@ class TrucoController
             console.log('Player ' + player + 'emitio envido');
         }
     }
+    sayTruco(player,request)
+    {
+        let request2 = {player:player,request:request};
+        if(this.hand.player != player || this.hand.truco  !== undefined)
+        {
+            alert('No se puede cantar truco');
+        }
+        else
+        {
+            
+            this.socket.emit("sayTruco", request2);
+            // console.log('Player ' + player + 'emitio envido');
+        }
+    }
     waitPlayers()
     {
         if (this.innerView.getName() == null || this.innerView.getName() == '') 
@@ -248,6 +262,32 @@ this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.pla
         {
             this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e[this.userName];
             this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e[this.oppName];
+        })
+        this.socket.on("trucoRequest", (e) =>  
+        {
+            if(e.player == this.oppName)
+            {
+                if (confirm("Queres aceptar el truco?")) 
+                {
+                    
+                    // let request = {index: index,play:'mesa'};
+                    // let request2 = {player:player,request:request};
+                    
+                    this.socket.emit("trucoResponse",{response: true,player:e.player });
+
+                } 
+                else
+                {
+                    this.socket.emit("trucoResponse",{response: false});
+                }
+            }
+
+        })
+        this.socket.on("trucoResponse", (e) =>  
+        {
+            let acceptedTruco = '';
+            e.player == this.userName? acceptedTruco = this.oppName : acceptedTruco = this.userName;
+            alert('Truco aceptado por player: ' + acceptedTruco);
         })
 
     }

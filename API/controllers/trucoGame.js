@@ -109,9 +109,18 @@ class Truco
 
             if(this.stageScore[this.playerOne.name] == 2)
             {
+                console.log('truco hand: ' + this.hand.truco)
+                if(this.hand.truco == true)
+                {
+                    this.playerOneScore+=2;
+                }
+                else
+                {
+                    this.playerOneScore+=1;
+                }
                 this.hand.winner = this.playerOne.name;
                 this.hand.state = 'end';
-                this.playerOneScore+=1;
+                // this.playerOneScore+=1;
                 this.hand.playersPoints[this.playerOne.name] = this.playerOneScore;
                 this.hand.playersPoints[this.playerTwo.name] = this.playerTwoScore; 
                 console.log('winner stage 1 mesa: '+ this.hand.winner);
@@ -141,6 +150,15 @@ class Truco
             
             if(this.stageScore[this.playerTwo.name] == 2)
             {
+                console.log('truco hand: ' + this.hand.truco)
+                if(this.hand.truco == true)
+                {
+                    this.playerOneScore+=2;
+                }
+                else
+                {
+                    this.playerOneScore+=1;
+                }
                 this.hand.winner = this.playerTwo.name;
                 this.hand.state = 'end';
                 this.playerTwoScore+=1;

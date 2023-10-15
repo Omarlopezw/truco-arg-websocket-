@@ -154,6 +154,11 @@ class TrucoTable extends HTMLElement
             this.request = {play:'envido'};
             this.innerController.sayEnvido(this.getUsername(),this.request);
         };
+        this.trucoButton.onclick = (event)=>
+        {   
+            this.request = {play:'truco'};
+            this.innerController.sayTruco(this.getUsername(),this.request);
+        };
 
     }
     setNames(username,oppName)

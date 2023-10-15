@@ -115,6 +115,7 @@ io.on("connection",(socket)=>
                         console.log('winner in server: ' + updatedHand.playersPoints[player1.name]);
                         console.log('winner in server: ' + updatedHand.playersPoints[player2.name]);
                         game.setHand('state','start');
+                        game.setHand('truco',undefined);
                         io.emit("compareCards",updatedHand);
                     }
                 }
@@ -153,6 +154,23 @@ io.on("connection",(socket)=>
             let points = game.getPlayersScore();
 
             io.emit("getPlayersScore",points);
+        }
+        else
+        {
+
+        }
+    })
+    socket.on("sayTruco",(e)=>
+    {
+        io.emit("trucoRequest",e);
+    })
+    socket.on("trucoResponse",(e)=>
+    {
+        if(e.response)
+        {
+            game.setHand('truco',true);
+
+            io.emit("trucoResponse",e);
         }
         else
         {
