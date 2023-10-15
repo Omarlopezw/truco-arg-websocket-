@@ -22,6 +22,13 @@ class TrucoTable extends HTMLElement
         this.whoIsTurn = document.createElement('h2');
         this.whoIsTurn.innerText = '';
 
+        this.generalScore = document.createElement('div');
+
+        this.playerOneScore = document.createElement('h2');
+        this.playerOneScore.innerText = '';
+        this.playerTwoScore = document.createElement('h2');
+        this.playerTwoScore.innerText = '';
+
         // Crear elementos y configurar la estructura de la mesa
         this.tableDiv = document.createElement('div');
         this.tableDiv.className = 'table';
@@ -114,6 +121,9 @@ class TrucoTable extends HTMLElement
     {
 
         // Agrega al jugador 1 en la parte superior de la mesa
+        this.tableDiv.appendChild(this.generalScore);
+        this.generalScore.appendChild(this.playerOneScore);
+        this.generalScore.appendChild(this.playerTwoScore);
         this.tableDiv.appendChild(this.whoIsTurn);
         this.tableDiv.appendChild(this.username);
         this.tableDiv.appendChild(this.player1);
@@ -131,10 +141,18 @@ class TrucoTable extends HTMLElement
         // this.innerController.initGame();
 
         this.playCardButton.onclick = (event)=>
-        {  let index = prompt('Por favor, ingresa el indice de su carta a jugar: ');
-
+        {   let index = prompt('Por favor, ingresa el indice de su carta a jugar: ');
+            while(index >2 || index < 0)
+            {
+                index = prompt('Indice incorrecto, ingresa el indice de su carta a jugar: ');
+            }
             this.request = {index: index,play:'mesa'};
             this.innerController.playCard(this.getUsername(),this.request);
+        };
+        this.envidoButton.onclick = (event)=>
+        {   
+            this.request = {play:'envido'};
+            this.innerController.sayEnvido(this.getUsername(),this.request);
         };
 
     }

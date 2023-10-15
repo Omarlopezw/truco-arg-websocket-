@@ -7,44 +7,94 @@ class CardHandler
 {
     constructor()
     {
-        this.mazo = [...cards];
+        // this.mazo = [...cards];
+        // this.hand = hand;
+        // this.deliveredeCard = [];
+        this.fullDeck = [...cards]; // Mazo completo
+        this.mazo = [...cards]; // Mazo actual
         this.hand = hand;
-        this.deliveredeCard = [];
+        this.deliveredCards = [];
     }
 
-    dealCard()
+    // dealCard() 
+    // {
+    //     if (this.mazo.length === 0) 
+    //     {
+    //         console.log('El mazo está vacío, mezcla las cartas y reinicia.');
+    //         // Aquí puedes realizar la lógica para mezclar el mazo y reiniciar el juego.
+    //         return null;  // Retorna null para indicar que no se ha repartido ninguna carta.
+    //     }
+    
+    //     const randomNumber = Math.floor(Math.random() * this.mazo.length);
+    //     const card = this.mazo.splice(randomNumber, 1)[0];
+    
+    //     if (!this.deliveredeCard.includes(card)) 
+    //     {
+    //         this.deliveredeCard.push(card);
+    //         return card;
+    //     } 
+    //     else 
+    //     {
+    //         console.log('Esta carta ya se ha entregado. Mezcla el mazo y reinicia si deseas continuar.');
+    //         // Aquí puedes realizar la lógica para evitar repartir la misma carta nuevamente.
+    //         return null;  // Retorna null para indicar que no se ha repartido ninguna carta.
+    //     }
+    // }
+    // resetDeck() 
+    
+    // {
+    //     this.mazo = this.mazo.concat(this.deliveredCards);
+
+    //     this.deliveredCards = [];
+    // }
+    dealCard() 
     {
         if (this.mazo.length === 0) 
         {
-            console.log('El mazo está vacío, mezcla las cartas y reinicia.');
-            return;
+        //   if (this.fullDeck.length === 0) {
+        //       return null; // No hay cartas disponibles.
+        //       console.log('El mazo completo está vacío. No hay cartas disponibles.');
+        //   }
+    
+          // Mezclar y reiniciar el mazo
+        //   this.mazo = this.shuffleDeck([...this.fullDeck]);
+          this.mazo = [...cards];
+          this.deliveredCards = [];
         }
-
+    
         const randomNumber = Math.floor(Math.random() * this.mazo.length);
         const card = this.mazo.splice(randomNumber, 1)[0];
-
-        // Verifica si la carta ya ha sido entregada antes de agregarla a cartasEntregadas
-        if (this.deliveredeCard.includes(card)) 
+    
+        if (!this.deliveredCards.includes(card)) 
         {
-            console.log('Esta carta ya se ha entregado. Mezcla el mazo y reinicia si deseas continuar.');
-        } 
-        else 
-        {
-            this.deliveredeCard.push(card);
-            return card;
+          this.deliveredCards.push(card);
+          return card;
+        } else {
+          console.log('Esta carta ya se ha entregado. Mezcla el mazo y reinicia si deseas continuar.');
+          // Aquí puedes realizar la lógica para evitar repartir la misma carta nuevamente.
+          return null; // Retorna null para indicar que no se ha repartido ninguna carta.
         }
-
-    }
-
-    mixCards()
-    {
-        if (this.hand.state == 'finish') 
-        {
-            this.mazo
+      }
+    
+      resetDeck() 
+      {
+        // this.mazo = this.shuffleDeck([...this.fullDeck]);
+        this.mazo = [...cards];
+        this.deliveredCards = [];
+      }
+    
+      // Función para mezclar el mazo (algoritmo de Fisher-Yates)
+      shuffleDeck(deck) {
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
         }
-    }
-
+        return deck;
+      }
 }
+    
+
+
 
 // let cHandler = new CardHandler();
 

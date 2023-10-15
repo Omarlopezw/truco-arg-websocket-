@@ -97,10 +97,27 @@ io.on("connection",(socket)=>
                 response = game.processRequest(e.request,player2);
                 
                 hand.player == player1.name ? game.setHand('player',player2.name) : game.setHand('player',player1.name);
+
                 obj.hand = game.getHand();
-                
+
                 io.emit("playCard",response);
                 io.emit("changeHand",obj);
+
+                if(obj.hand.numero == '2')
+                {
+                    game.setHand('state','finished-envido');
+                    game.compareCards();
+                    let updatedHand = game.getHand();
+
+                    if(updatedHand.state == 'end')
+                    {
+                        console.log('winner in server: ' + updatedHand.winner);
+                        console.log('winner in server: ' + updatedHand.playersPoints[player1.name]);
+                        console.log('winner in server: ' + updatedHand.playersPoints[player2.name]);
+                        game.setHand('state','start');
+                        io.emit("compareCards",updatedHand);
+                    }
+                }
             }
             else
             {
@@ -108,18 +125,37 @@ io.on("connection",(socket)=>
             }
             io.emit("playCard",response);
         }
+        socket.on("nextRound",(e)=>
+        {
+            let response = {};
+            game.resetRound();
+            response[player1.name] = player1.cards;
+            response[player2.name] = player2.cards;
+            hand = game.getHand();
+
+            let obj = {cards: response,hand:hand}
+
+            io.emit("nextRound",obj);
+        })
     })
 
-    socket.on("changeHand",(e)=>
+    socket.on("sayEnvido",(e)=>
     {
-        if( e != null && e.value != hand.player )
+        io.emit("envidoRequest",e);
+    })
+    socket.on("envidoResponse",(e)=>
+    {
+        if(e.response)
         {
-            let obj = {};
+            let response = game.compareEnvido();
+            io.emit("compareEnvido",response);
 
-            game.setHand(e.key,e.value);
-            obj.hand = game.getHand();
+            let points = game.getPlayersScore();
 
-            io.emit("changeHand",obj);
+            io.emit("getPlayersScore",points);
+        }
+        else
+        {
 
         }
     })

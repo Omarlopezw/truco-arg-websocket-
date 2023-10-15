@@ -18,26 +18,23 @@ class Truco
         let playerTwoName = player2.name;
         this.playerOneScore = 0;
         this.playerTwoScore = 0;
-        this.stageScore = {[playerOneName]: 0,[playerTwoName]:0}
+        // this.stageScore = {[playerOneName]: 0,[playerTwoName]:0}
+        this.stageScore = {};
         this.hand = hand;
         this.plays = new Plays();
-        this.table = {[playerOneName]: [],[playerTwoName]:[]};
+        // this.table = {[playerOneName]: [],[playerTwoName]:[]};
+        this.table = {};
     }
     start(firstHandPlayerName)
     {
-        this.hand.numero = '1';
+        this.hand.numero = '0';
+        this.hand.state = 'start';
         this.hand.player = firstHandPlayerName;
         if (firstHandPlayerName == this.playerOne.name) 
         {
             console.log("El primer jugador comienza. "  + this.playerOne.name);
             this.dealCardToPlayer(this.playerOne);
             this.dealCardToPlayer(this.playerTwo);
-            console.log("Que hacer?." + this.playerOne.getName());
-            //     console.log("Envido..");
-            //     console.log("Truco..");
-            //     console.log("Arrojar carta..");
-                // this.processRequest('mesa',this.playerOne);
-                // this.nextPlayerForStage1(this.playerTwo);
         } 
         else 
         {
@@ -46,12 +43,6 @@ class Truco
             // this.hand.numero = '1';
             this.dealCardToPlayer(this.playerTwo);
             this.dealCardToPlayer(this.playerOne);
-            // console.log("Que hacer?.");
-            //     console.log("Envido..");
-            //     console.log("Truco..");
-            //     console.log("Arrojar carta..");
-                // this.processRequest('mesa',this.playerTwo);
-                // this.nextPlayerForStage1(this.playerOne);
         }
     }
     getHand()
@@ -64,209 +55,177 @@ class Truco
     }
     dealCardToPlayer(player)
     {
-        while(player.cards.length < 3)
+        if(player.cards.length < 3)
         {
-            let card = this.mazo.dealCard();
-            if(card) player.cards.push(card);
-        } 
-    }
-    compareCards()
-    {
-        let playerOneLatestCard = this.table[this.playerOne.name][this.table[this.playerOne.name].length - 1];
-        let playerTwoLatestCard = this.table[this.playerTwo.name][this.table[this.playerTwo.name].length - 1];
-        // console.log(playerTwoLatestCard)
-        if(playerOneLatestCard.truco > playerTwoLatestCard.truco)
-        {
-            this.hand.winner = this.playerOne;
-            this.stageScore[this.playerOne.name]=+1;
-            this.playerOneScore=+1;
-            console.log('winner stage 1 mesa: '+ this.hand.winner.name);
+            while(player.cards.length < 3)
+            {
+                let card = this.mazo.dealCard();
+                if(card) player.cards.push(card);
+            } 
         }
-        else if(playerOneLatestCard.truco < playerTwoLatestCard.truco)
+        else
         {
-            this.hand.winner = this.playerTwo;
-            this.stageScore[this.playerTwo.name]=+1;
-            this.playerTwoScore=+1;
-            console.log('winner stage 1 mesa: '+ this.hand.winner.name);
+            console.log('tiene 3 o mas cartas')
+        }
+
+    }
+    resetRound()
+    {
+        this.playerOne.cards = [];
+        this.playerTwo.cards = [];
+        this.mazo.resetDeck();
+        if(this.hand.player != this.playerOne.name)
+        {
+            this.hand.player = this.playerOne.name;
+            this.dealCardToPlayer(this.playerOne);
+            this.dealCardToPlayer(this.playerTwo);
 
         }
         else
         {
-            console.log('parda');
-            this.hand.state = 'parda';
+            this.hand.player = this.playerTwo.name;
+            this.dealCardToPlayer(this.playerTwo);
+            this.dealCardToPlayer(this.playerOne);
+        }
+
+    }
+    compareCards()
+    {
+        console.log("playerOneLatestCard. "  + this.playerOne.name);
+        console.log("playerTwoLatestCard. "  + this.playerTwo.name);
+
+        let playerOneLatestCard = this.table[this.playerOne.name][this.table[this.playerOne.name].length - 1];
+        let playerTwoLatestCard = this.table[this.playerTwo.name][this.table[this.playerTwo.name].length - 1];
+        if(playerOneLatestCard.truco > playerTwoLatestCard.truco)
+        {
+
+            if (!this.stageScore[this.playerOne.name]) 
+            {
+                this.stageScore[this.playerOne.name] = 0; // Inicializa un nuevo array si no existe
+            }
+            this.stageScore[this.playerOne.name]+=1;
+
+            console.log('stage score player 1 ' + this.stageScore[this.playerOne.name])
+
+            if(this.stageScore[this.playerOne.name] == 2)
+            {
+                this.hand.winner = this.playerOne.name;
+                this.hand.state = 'end';
+                this.playerOneScore+=1;
+                this.hand.playersPoints[this.playerOne.name] = this.playerOneScore;
+                this.hand.playersPoints[this.playerTwo.name] = this.playerTwoScore; 
+                console.log('winner stage 1 mesa: '+ this.hand.winner);
+                console.log('player1: '+ this.hand.playersPoints[this.playerOne.name]);
+                console.log('player2: '+ this.hand.playersPoints[this.playerTwo.name]);
+                this.stageScore[this.playerOne.name] = 0;
+                if(this.stageScore[this.playerTwo.name])
+                {
+                    this.stageScore[this.playerTwo.name] = 0
+                }
+                else
+                {
+                    console.log('PLayer 2 sigue en 0')
+                }
+            }
+        }
+        else if(playerOneLatestCard.truco < playerTwoLatestCard.truco)
+        {
+            
+            if (!this.stageScore[this.playerTwo.name]) 
+            {
+                this.stageScore[this.playerTwo.name] = 0; // Inicializa un nuevo array si no existe
+            }
+            this.stageScore[this.playerTwo.name]+=1;
+
+            console.log('stage score player 2 ' + this.stageScore[this.playerTwo.name])
+            
+            if(this.stageScore[this.playerTwo.name] == 2)
+            {
+                this.hand.winner = this.playerTwo.name;
+                this.hand.state = 'end';
+                this.playerTwoScore+=1;
+                this.hand.playersPoints[this.playerOne.name] = this.playerOneScore;
+                this.hand.playersPoints[this.playerTwo.name] = this.playerTwoScore;                
+                console.log('winner stage 1 mesa: '+ this.hand.winner);
+                console.log('player1: '+ this.hand.playersPoints[this.playerOne.name]);
+                console.log('player2: '+ this.hand.playersPoints[this.playerTwo.name]);
+
+                this.stageScore[this.playerTwo.name] = 0;
+                if(this.stageScore[this.playerOne.name])
+                {
+                    this.stageScore[this.playerOne.name] = 0
+                }
+                else
+                {
+                    console.log('PLayer 1 sigue en 0')
+                }
+            }
+
+
+        }
+        else
+        {
+            console.log('pardaa');
+            if (!this.stageScore[this.playerOne.name] && !this.stageScore[this.playerTwo.name]) 
+            {
+                this.stageScore[this.playerOne.name] = 0; // Inicializa un nuevo array si no existe
+                this.stageScore[this.playerTwo.name] = 0; // Inicializa un nuevo array si no existe
+            }
+            if(this.hand.parda != true)
+            {
+                this.stageScore[this.playerOne.name]+=1;
+                this.stageScore[this.playerTwo.name]+=1;
+                this.setHand('parda',true);
+            }
+            else
+            {
+                this.stageScore[this.playerOne.name] = 1;
+                this.stageScore[this.playerTwo.name] = 1;
+            }
+
         }
     }
     compareEnvido()
     {
+        this.hand.envido = true;
+        this.hand.state = 'finished-envido';
+        let envidoPoints = {};
         if(this.playerOne.sayEnvido() > this.playerTwo.sayEnvido())
         {
-            this.playerOneScore=+2;
+            this.playerOneScore+=2;
         }
-        else if(this.playerOne.sayEnvido() > this.playerTwo.sayEnvido())
+        else if(this.playerOne.sayEnvido() < this.playerTwo.sayEnvido())
         {
-            this.playerTwoScore=+2;
+            this.playerTwoScore+=2;
         }
         else
         {
-            console.log('gana el que es mano');
-            this.hand.state = 'parda';
+            console.log('pparda en envido')
+            this.hand.player == this.playerOne.name? this.playerOneScore+=2 : this.playerTwoScore+=2;
         }
+        envidoPoints[this.playerOne.name] = this.playerOne.sayEnvido();
+        envidoPoints[this.playerTwo.name] = this.playerTwo.sayEnvido();
+
+        return envidoPoints;
     }
-    nextPlayerForStage1(player)
-    {
-        if(this.hand.numero == '1' && this.hand.envido != '1' && this.hand.truco != '1')
-        {
-            console.log("Que hacer?.");
-            console.log("Envido..");
-            console.log("Truco..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-            // this.beginStage2();
-        }
-        else if(this.hand.numero == '1' && this.hand.envido == '1' && this.hand.truco == '1' )
-        {
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-            // this.beginStage2();
-        }
-        else if(this.hand.numero == '1' && this.hand.envido != '1' && this.hand.truco == '1')
-        {
-            console.log("Que hacer?.");
-            console.log("Envido..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-            // this.beginStage2();
-        }
-        else
-        {
-            console.log("Que hacer?.");
-            console.log("Truco..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-            // this.beginStage2();
-        }
-    }
-    beginStage2()
-    {
-        this.hand.numero = '2';
-        if(this.hand.numero == '2' && this.hand.truco != '1')
-        {
-            console.log("Que hacer?.");
-            console.log("Truco..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',this.hand.winner); 
-            let nextPlayer = this.hand.winner.name == this.playerOne.name? this.playerTwo : this.playerOne;
-            this.nextPlayerForStage2(nextPlayer);
-            if(this.stageScore[this.playerOne.name] == 2)
-            {
-                console.log('winner player one');
-            }
-            else if(this.stageScore[this.playerTwo.name] == 2)
-            {
-                console.log('winner player two');
-            }
-            else
-            {
-                this.beginStage3();
-            }
-        }
-        else
-        {
-            console.log("Que hacer?.");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',this.hand.winner);
-            let nextPlayer = this.hand.winner.name == this.playerOne.name? this.playerTwo : this.playerOne;
-            this.nextPlayerForStage2(nextPlayer);
-            if(this.stageScore[this.playerOne.name] == 2)
-            {
-                console.log('winner player one');
-            }
-            else if(this.stageScore[this.playerTwo.name] == 2)
-            {
-                console.log('winner player two');
-            }
-            else
-            {
-                this.beginStage3();
-            }
-        }
-    }
-nextPlayerForStage2(player)
-    {
-        if(this.hand.numero == '2' && this.hand.truco != '1')
-        {
-            console.log("Que hacer?.");
-            console.log("Truco..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-            // this.beginStage2();
-        }
-        else
-        {
-            console.log("Que hacer?.");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            let nextPlayer = this.hand.winner.name == this.playerOne.name? this.playerTwo : this.playerOne;
-            this.nextPlayerForStage2(nextPlayer);
-            this.hand.state = 'stage1End';
-            // this.beginStage2();
-        }
-    }
-    beginStage3()
-    {
-        this.hand.numero = '3';
-        let winnerPlayer = this.hand.winner;
-        if(this.hand.numero == '3' && this.hand.truco != '1')
-        {
-            console.log("Que hacer?.");
-            console.log("Truco..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',winnerPlayer); 
-            let nextPlayer = this.hand.winner.name == this.playerOne.name? this.playerTwo : this.playerOne;
-            this.nextPlayerForStage3(nextPlayer);
-        }
-        else
-        {
-            console.log("Que hacer?.");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',winnerPlayer); 
-            let nextPlayer = this.hand.winner.name == this.playerOne.name? this.playerTwo : this.playerOne;
-            this.nextPlayerForStage3(nextPlayer);
-        }
-    }
-    nextPlayerForStage3(player)
-    {
-        if(this.hand.numero == '3' && this.hand.truco != '1')
-        {
-            console.log("Que hacer?.");
-            console.log("Truco..");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-        }
-        else
-        {
-            console.log("Que hacer?.");
-            console.log("Arrojar carta..");
-            this.processRequest('mesa',player); 
-            this.hand.state = 'stage1End';
-        }
-    }
+
     processRequest(request,player)
     {
         switch (request.play) {
             case 'mesa':
                 // let indexMesa = 2;
                 let card = player.throwCard(request.index);
-                console.log('queda con: ' + player.cards)
-                console.log('queda con: ' + player.cards[0].img)
-                // this.table[player.name].push(card);
-                this.updateTable(player);
+                // console.log('queda con: ' + player.cards[request.index].img)
+                // console.log('queda con: ' + this.playerOne.cards[request.index].img)
+                // console.log('queda con: ' + this.playerTwo.cards[request.index].img)
+                console.log('player que llega a request: ' + player.name)
+                if (!this.table[player.name]) 
+                {
+                    this.table[player.name] = []; // Inicializa un nuevo array si no existe
+                }
+                this.table[player.name].push(card);
+                // this.updateTable(player);
+                this.hand.numero == '1' ? this.setHand('numero','2') : this.setHand('numero','1');
                 return card;
                 break;
             case 'truco':
@@ -290,6 +249,14 @@ nextPlayerForStage2(player)
             default:
                 break;
         }
+    }
+    getPlayersScore()
+    {
+        let points = {};
+        points[this.playerOne.name] = this.playerOneScore;
+        points[this.playerTwo.name] = this.playerTwoScore;
+
+        return points;
     }
     updateTable(player)
     {

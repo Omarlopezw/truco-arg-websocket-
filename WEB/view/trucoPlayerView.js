@@ -109,6 +109,12 @@ class TrucoPlayer extends HTMLElement
         button.id = btnId;
         return button;
     }
+    resetCards()
+    {
+        this.cards[0].setPath('');
+        this.cards[1].setPath('');
+        this.cards[2].setPath('');
+    }
 }
 
 // Registrar el componente personalizado

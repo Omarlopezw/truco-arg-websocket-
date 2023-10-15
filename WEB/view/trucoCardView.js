@@ -38,16 +38,23 @@ class TrucoCard extends HTMLElement
     }
     setPath(path)
     {
-        if(this.visibility)
-        {
-            this.path = path;
-            this.card.style.backgroundImage = `url(${this.path})`;
-        }
-        else
-        {
-            this.path = path;
-            this.card.style.backgroundImage = `url("../../API/assets/img/backCard.jpg")`;
-        }
+        // if(path == '')
+        // {
+        //     this.card.style.backgroundImage = 'none';
+        // }
+        // else
+        // {
+            if(this.visibility)
+            {
+                this.path = path;
+                this.card.style.backgroundImage = `url(${this.path})`;
+            }
+            else
+            {
+                this.path = path;
+                this.card.style.backgroundImage = `url("../../API/assets/img/backCard.jpg")`;
+            }
+        // }
 
     }
     getPath()

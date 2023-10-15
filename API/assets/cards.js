@@ -117,7 +117,7 @@ let cards = [
         palo: "basto",
         envido: 0,
         truco: 5,
-        img: "../../API/assets/img/1_de_basto.png",
+        img: "../../API/assets/img/10_de_basto.png",
     },
     {
         numero: 10,

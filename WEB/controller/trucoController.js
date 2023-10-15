@@ -12,7 +12,7 @@ class TrucoController
         this.table = [];
         this.playedCard = null;
         this.hand = null;
-        this.gameInitialized = false;
+        this.coundStage = 0;
 
     }
     initGame()
@@ -28,7 +28,8 @@ class TrucoController
     }
     dealCards(hand)
     {
-        console.log('entradno adealcard')
+        console.log('entre a dealscards ' +hand.cards[this.userName][0].img);
+        console.log('entre a dealscards ' +hand.cards[this.oppName][0].img);
         this.innerView.player1.cards[0].setVisibility(true);
         this.innerView.player1.cards[1].setVisibility(true);
         this.innerView.player1.cards[2].setVisibility(true);
@@ -40,6 +41,9 @@ class TrucoController
         console.log('cartas player1 al empezar game: ' + hand.cards[this.userName][2].img)
 
         // // //player2
+        this.innerView.player2.cards[0].setVisibility(false);
+        this.innerView.player2.cards[1].setVisibility(false);
+        this.innerView.player2.cards[2].setVisibility(false);
         this.innerView.player2.cards[0].setPath(hand.cards[this.oppName][0].img);
         this.innerView.player2.cards[1].setPath(hand.cards[this.oppName][1].img);
         this.innerView.player2.cards[2].setPath(hand.cards[this.oppName][2].img);
@@ -68,11 +72,25 @@ class TrucoController
             // }
         }
     }
+    resetPlayersHand()
+    {
+        this.innerView.player1.resetCards();
+        this.innerView.player2.resetCards();
+        console.log('cartas reset ');
+
+    }
     updateTable(card)
     {
-        // let latestCard = this.table[this.table.length-1];
-        // console.log('latedtCard: ' + card.img);
-        this.innerView.playedCards.style.backgroundImage = `url(${card.img})`;
+        if (card != null) 
+        {
+            this.innerView.playedCards.style.backgroundImage = `url(${card.img})`;
+            console.log('no soy nu loooooooooooooooo ' + card);
+        } 
+        else 
+        {
+            console.log('soy nulooooooooooooooooo ' + card);
+            this.innerView.playedCards.style.backgroundImage = 'none';
+        }
 
     }
     playCard(player,request)
@@ -82,8 +100,24 @@ class TrucoController
         {
             alert('No es tu turno');
         }
+        this.coundStage+=1;
+        console.log('contador de referencia de las rondas: ' + this.coundStage);
         this.socket.emit("playCard", request2);
         // this.renderHandCards(response,this.innerView.player1);
+    }
+    sayEnvido(player,request)
+    {
+        let request2 = {player:player,request:request};
+        if(this.hand.player != player || this.hand.state  == 'finished-envido')
+        {
+            alert('No se puede cantar envido');
+        }
+        else
+        {
+            
+            this.socket.emit("sayEnvido", request2);
+            console.log('Player ' + player + 'emitio envido');
+        }
     }
     waitPlayers()
     {
@@ -158,7 +192,6 @@ class TrucoController
                 this.updateTable(e);
             }
         })
-
         this.socket.on("changeHand", (e) =>  
         {
             this.hand = e.hand;
@@ -168,6 +201,53 @@ class TrucoController
             {
                 this.innerView.playCardButton.disabled = false;
             }
+        })
+        this.socket.on("compareCards", (e) =>  
+        {
+            alert('winner: ' + e.winner);
+            this.hand = e;
+this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.playersPoints[this.userName];
+            this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e.playersPoints[this.oppName];            
+
+            if(e.state == 'start')
+            {
+                this.socket.emit("nextRound",{});
+            }
+
+        })
+        this.socket.on("nextRound", (e) =>  
+        {
+            this.updateTable(null);
+            this.resetPlayersHand();
+
+            this.dealCards(e);
+
+        })
+        this.socket.on("envidoRequest", (e) =>  
+        {
+            if(e.player == this.oppName)
+            {
+                if (confirm("Queres aceptar el envido?")) 
+                {
+                    this.socket.emit("envidoResponse",{response: true});
+
+                } 
+                else
+                {
+                    this.socket.emit("envidoResponse",{response: false});
+                }
+            }
+
+        })
+        this.socket.on("compareEnvido", (e) =>  
+        {
+            alert('Mis puntos envido ' + e[this.userName])
+            alert('Puntos envido de mi oponente ' + e[this.oppName])
+        })
+        this.socket.on("getPlayersScore", (e) =>  
+        {
+            this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e[this.userName];
+            this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e[this.oppName];
         })
 
     }
