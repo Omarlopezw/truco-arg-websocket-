@@ -17,7 +17,7 @@ class TrucoPlayer extends HTMLElement
         this.playerName = document.createElement('h2');
         const playerAvatar = document.createElement('img');
         playerAvatar.src = path;
-        
+
         const deck = document.createElement('div');
         deck.classList.add('truco-card');
 
@@ -45,6 +45,8 @@ class TrucoPlayer extends HTMLElement
             border-radius: 50%; /* Hace que la imagen sea circular */
             margin: 10px auto; /* Espaciado alrededor de la imagen y centrado horizontalmente */
             display: block;
+            left: 55px;
+            position: absolute;
         }
         
         /* Estilo para el contenedor de la carta */

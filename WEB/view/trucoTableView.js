@@ -10,8 +10,8 @@ class TrucoTable extends HTMLElement
         super();
         this.attachShadow({ mode: 'open' }); // Abre el sombreador CSS
         
-        this.player1 = new TrucoPlayer();
-        this.player2 = new TrucoPlayer();
+        this.player1 = new TrucoPlayer("../../API/assets/img/porteño.png");
+        this.player2 = new TrucoPlayer("../../API/assets/img/porteño.png");
         this.request = {};
         this.username = document.createElement('h2');
         this.username.innerText = '';
