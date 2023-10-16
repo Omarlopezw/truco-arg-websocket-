@@ -57,12 +57,6 @@ class Plays
             if (palosAcummulator[palo].acummulator === 1) 
             {
                 lieCards.push(palosAcummulator[palo].card[0]);
-                // if (lieCards.length === 2) 
-                // {
-                //     const maxEnvido = Math.max(lieCards[0].envido, lieCards[1].envido);
-                //     lieCards = []; // Vaciar la matriz para la próxima llamada
-                //     return total = maxEnvido;
-                // }
                 if (lieCards.length === 3) 
                 {
                     const maxEnvido = Math.max(lieCards[0].envido, lieCards[1].envido,lieCards[2].envido);

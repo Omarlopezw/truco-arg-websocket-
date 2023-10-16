@@ -50,8 +50,6 @@ io.on("connection",(socket)=>
                     p1:p1obj,
                     p2:p2obj,
                 }
-
-                // playingArray.push(obj)
                 playingArray[0] = obj;
                 playingArray[1] = handInitialized;
                 arr.splice(0,2);
@@ -111,9 +109,6 @@ io.on("connection",(socket)=>
 
                     if(updatedHand.state == 'end')
                     {
-                        console.log('winner in server: ' + updatedHand.winner);
-                        console.log('winner in server: ' + updatedHand.playersPoints[player1.name]);
-                        console.log('winner in server: ' + updatedHand.playersPoints[player2.name]);
                         game.setHand('state','start');
                         game.setHand('truco',undefined);
 
@@ -194,11 +189,6 @@ io.on("connection",(socket)=>
 
         }
     })
-    // socket.on("finishGame",(e)=>
-    // {
-    //     io.emit("finishGame",e);
-    // })
-
     console.log('usuario conectado');
 
 })

@@ -2,10 +2,7 @@ const { Player } = require('./playerHandler.js');
 const { CardHandler } = require('./cardHandler.js');
 const { hand } = require('../assets/hand.js');
 const { Plays } = require("./plays.js");
-// import { Player } from './playerHandler.js';
-// import { CardHandler } from './cardHandler.js';
-// import { hand } from '../assets/hand.js';
-// import { Plays } from "./plays.js";
+
 
 class Truco
 {
@@ -18,11 +15,9 @@ class Truco
         let playerTwoName = player2.name;
         this.playerOneScore = 0;
         this.playerTwoScore = 0;
-        // this.stageScore = {[playerOneName]: 0,[playerTwoName]:0}
         this.stageScore = {};
         this.hand = hand;
         this.plays = new Plays();
-        // this.table = {[playerOneName]: [],[playerTwoName]:[]};
         this.table = {};
     }
     start(firstHandPlayerName)
@@ -39,8 +34,6 @@ class Truco
         else 
         {
             console.log("El segundo jugador comienza." + this.playerTwo.name);
-            // this.hand.player = this.playerTwo.name;
-            // this.hand.numero = '1';
             this.dealCardToPlayer(this.playerTwo);
             this.dealCardToPlayer(this.playerOne);
         }
@@ -246,13 +239,6 @@ class Truco
                 this.hand.numero == '1' ? this.setHand('numero','2') : this.setHand('numero','1');
                 return card;
                 break;
-            case 'truco':
-                let rivalTrucoResponse = false;
-                let index;
-                this.hand.truco = '1';
-                player.name == this.playerOne.name ? rivalTrucoResponse = this.playerTwo.responseTruco(true) : rivalTrucoResponse = this.playerOne.responseTruco(true);
-                rivalTrucoResponse != false? this.compareCards() : console.log('no truco') ;
-                break;
             case 'envido':
                 let rivalResponse = false;
                 let indexEnvido = 0;
@@ -287,14 +273,5 @@ class Truco
         
     }
 }
-// let player1 = new Player('Omar');
-// let player2 = new Player('Aldo');
-// let game = new Truco(player1,player2);
-
-// game.start();
-// game.compareCards();
-// game.beginStage2();
-// game.beginStage3();
 
 module.exports = {Truco};
-// export{Truco};

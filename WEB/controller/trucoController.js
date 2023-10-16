@@ -9,19 +9,13 @@ class TrucoController
         this.oppName = '';
         this.userName = '';
         this.firstHandPlayer = '';
-        this.table = [];
         this.playedCard = null;
         this.hand = null;
-        this.coundStage = 0;
-
     }
     initGame()
     {
 
         this.innerView.setNames(this.userName,this.oppName);
-        // this.innerModel.setNames(this.userName,this.oppName);
-        // let response = this.innerModel.initGame(this.firstHandPlayer);
-        // this.hand = this.innerModel.getHand();
         this.socket.emit("initGame", {firstHandPlayer: this.firstHandPlayer,
             userName: this.userName,oppName: this.oppName});
 
@@ -60,8 +54,6 @@ class TrucoController
                 player.cards[i].setVisibility(true);
                 player.cards[i].setPath('');
                 this.innerView.playCardButton.disabled = true;
-                this.table.push(card);
-                // console.log('table: ' + this.table[0].img);
                 break;
             }
             // else
@@ -84,11 +76,9 @@ class TrucoController
         if (card != null) 
         {
             this.innerView.playedCards.style.backgroundImage = `url(${card.img})`;
-            console.log('no soy nu loooooooooooooooo ' + card);
         } 
         else 
         {
-            console.log('soy nulooooooooooooooooo ' + card);
             this.innerView.playedCards.style.backgroundImage = 'none';
         }
 
@@ -100,10 +90,7 @@ class TrucoController
         {
             alert('No es tu turno');
         }
-        this.coundStage+=1;
-        console.log('contador de referencia de las rondas: ' + this.coundStage);
         this.socket.emit("playCard", request2);
-        // this.renderHandCards(response,this.innerView.player1);
     }
     sayEnvido(player,request)
     {
@@ -130,7 +117,6 @@ class TrucoController
         {
             
             this.socket.emit("sayTruco", request2);
-            // console.log('Player ' + player + 'emitio envido');
         }
     }
     waitPlayers()
@@ -152,14 +138,6 @@ class TrucoController
         this.updateTable(null);
         this.resetPlayersHand();
         this.dealCards(e);
-    
-        // Elimina el oyente de eventos "nextRound" después de manejarlo
-        // this.socket.off("nextRound", handleNextRound);
-        // this.socket.off("nextRound", this.handleNextRound);
-        // this.socket.off("nextRound", (e) =>  
-        // {
-        //     this.handleNextRound(e);
-        // })
     }
     iniciarSocketIO()
     {
@@ -181,13 +159,10 @@ class TrucoController
 
             alert('encontrado');
             let allPlayersArray = e.allPlayers[0];
-            let startedGame = e.allPlayers[1];
-            let lastestPlayers = allPlayersArray[allPlayersArray.length-1];
             console.log("html",allPlayersArray[allPlayersArray.length-1]);
 
             if (this.innerView.getName() != '') 
             {
-                // const foundObject = allPlayersArray.find(obj => obj.p1.p1name == `${this.innerView.getName()}` || obj.p2.p2name == `${this.innerView.getName()}`);
                 allPlayersArray.p1.p1name == `${this.innerView.getName()}` ? this.oppName = allPlayersArray.p2.p2name : this.oppName = allPlayersArray.p1.p1name
                 
                 this.oppName == allPlayersArray.p1.p1name? this.userName = allPlayersArray.p2.p2name : this.userName = allPlayersArray.p1.p1name;
@@ -214,7 +189,6 @@ class TrucoController
         {
             if(e != null)
             {
-                // let obj = {key: 'player',value: `${this.oppName}`};
                 console.log('carta que se deberia sacar del contrario:'  + e.img);
                 this.renderHandCards(e,this.innerView.player1);
                 this.renderHandCards(e,this.innerView.player2);
@@ -235,23 +209,12 @@ class TrucoController
         {
             alert('winner: ' + e.winner);
             this.hand = e;
-// this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.playersPoints[this.userName];
-//             this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e.playersPoints[this.oppName];            
-
             if(e.state == 'start')
             {
                 this.socket.emit("nextRound",{});
             }
 
         })
-        // this.socket.on("nextRound", (e) =>  
-        // {
-        //     this.updateTable(null);
-        //     this.resetPlayersHand();
-
-        //     this.dealCards(e);
-
-        // })
         this.socket.on("nextRound", (e) =>  
         {
             this.handleNextRound(e);

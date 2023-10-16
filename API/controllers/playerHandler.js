@@ -1,8 +1,5 @@
 const { cards } = require("../assets/cards");
 const { Plays } = require("./plays.js");
-// import { cards } from "../assets/cards.js"
-// import { Plays }from "./plays.js";
-
 class Player
 {
     constructor()
