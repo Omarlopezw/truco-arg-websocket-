@@ -1,6 +1,6 @@
 # Truco Argentino
 
-![Logo](truco-arg-websocket/API/assets/img/LOGO.png)
+![Logo](API/assets/img/LOGO.png)
 
 # Truco Argentino con WebSockets
 
@@ -17,7 +17,6 @@ El juego se basa en la tecnología WebSockets para facilitar la comunicación en
 ## Autor
 
 - **Omar López**
-
 
 ## Licencia
 
