@@ -153,11 +153,11 @@ class Truco
                 console.log('truco hand: ' + this.hand.truco)
                 if(this.hand.truco == true)
                 {
-                    this.playerOneScore+=2;
+                    this.playerTwoScore+=2;
                 }
                 else
                 {
-                    this.playerOneScore+=1;
+                    this.playerTwoScore+=1;
                 }
                 this.hand.winner = this.playerTwo.name;
                 this.hand.state = 'end';

@@ -30,7 +30,13 @@ class TrucoCard extends HTMLElement
             border-radius: 10px;
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
-        }`;
+        }
+        .selected {
+            background-color: #007bff; /* Color de fondo azul */
+            color: #fff; /* Color de texto blanco */
+            border: 2px solid #0056b3; /* Borde azul */
+        }
+        `;
 
         this.appendChild(this.card);
         this.appendChild(style);

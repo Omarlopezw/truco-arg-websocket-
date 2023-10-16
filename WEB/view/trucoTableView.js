@@ -12,6 +12,7 @@ class TrucoTable extends HTMLElement
         
         this.player1 = new TrucoPlayer("../../API/assets/img/porteño.png");
         this.player2 = new TrucoPlayer("../../API/assets/img/player.png");
+
         this.request = {};
         this.username = document.createElement('h2');
         this.username.innerText = '';
@@ -88,6 +89,7 @@ class TrucoTable extends HTMLElement
         {
         background-color: green; /* Cambio de color al pasar el ratón */
         }
+
         .cards
         {
             width: 120px;
@@ -119,7 +121,6 @@ class TrucoTable extends HTMLElement
     }
     connectedCallback()
     {
-
         // Agrega al jugador 1 en la parte superior de la mesa
         this.tableDiv.appendChild(this.generalScore);
         this.generalScore.appendChild(this.playerOneScore);
@@ -137,18 +138,46 @@ class TrucoTable extends HTMLElement
         this.options.appendChild(this.trucoButton);
         this.options.appendChild(this.envidoButton);
         this.options.appendChild(this.playCardButton);
+
+        // this.player1Deck.appendChild(this.player1Cards[0]);
+        // this.player1Deck.appendChild(this.player1Cards[1]);
+        // this.player1Deck.appendChild(this.player1Cards[2]);
+        // this.player2Deck.appendChild(this.player2Cards[0]);
+        // this.player2Deck.appendChild(this.player2Cards[1]);
+        // this.player2Deck.appendChild(this.player2Cards[2]);
+
         this.innerController.setView(this);    
         // this.innerController.initGame();
 
-        this.playCardButton.onclick = (event)=>
-        {   let index = prompt('Por favor, ingresa el indice de su carta a jugar: ');
-            while(index >2 || index < 0)
+        // this.playCardButton.onclick = (event)=>
+        // {   let index = prompt('Por favor, ingresa el indice de su carta a jugar: ');
+        //     while(index >2 || index < 0)
+        //     {
+        //         index = prompt('Indice incorrecto, ingresa el indice de su carta a jugar: ');
+        //     }
+        //     this.request = {index: index,play:'mesa'};
+        //     this.innerController.playCard(this.getUsername(),this.request);
+        // };
+        // Asigna un controlador de eventos al botón playCardButton
+        this.playCardButton.addEventListener("click", () => 
+        {
+            // Encuentra la carta seleccionada entre tus cartas
+            const selectedCard = Array.from(this.player1.cards).find((card) => card.classList.contains("selected"));
+            if (selectedCard) 
             {
-                index = prompt('Indice incorrecto, ingresa el indice de su carta a jugar: ');
+                // Obtiene el índice de la carta seleccionada
+                const index = Array.from(this.player1.cards).indexOf(selectedCard);
+                
+                // Realiza la acción con la carta seleccionada
+                this.request = { index: index, play: 'mesa' };
+                this.innerController.playCard(this.getUsername(), this.request);
+            } 
+            else 
+            {
+                alert("Por favor, selecciona una carta antes de jugar.");
             }
-            this.request = {index: index,play:'mesa'};
-            this.innerController.playCard(this.getUsername(),this.request);
-        };
+        });
+
         this.envidoButton.onclick = (event)=>
         {   
             this.request = {play:'envido'};
@@ -159,6 +188,20 @@ class TrucoTable extends HTMLElement
             this.request = {play:'truco'};
             this.innerController.sayTruco(this.getUsername(),this.request);
         };
+
+        this.player1.cards.forEach((card) => {
+            card.addEventListener("click", () =>
+            {
+                // Deselecciona todas las cartas
+                this.player1.cards.forEach((otherCard) => 
+                {
+                    otherCard.classList.remove("selected");
+                });
+        
+                // Selecciona la carta que se hizo clic
+                card.classList.add("selected");
+            });
+        });
 
     }
     setNames(username,oppName)
