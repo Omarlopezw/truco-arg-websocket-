@@ -1,6 +1,6 @@
 # Truco Argentino
 
-![Logo](API/assets/img/LOGO.png)
+![Logo](API/assets/img/LOGO.jpg)
 
 # Truco Argentino con WebSockets
 
