@@ -14,8 +14,11 @@ class Truco extends HTMLElement
         this.trucoTable = new TrucoTable(this.innerController);
         this.CurrentViewScreen = this.trucoEntry;
         //login state
-
+        this.newController = new TrucoController(this.innerController.model); // Crea un nuevo controlador
+        this.newGame = new TrucoEntry(this.newController);
+        
         this.trucoEntry.addEventListener('changeTrucoView',() => { this.changeView() })
+        this.trucoTable.addEventListener('finishGame',() => { this.finishGame() })
     }
     connectedCallback()
     {
@@ -27,9 +30,15 @@ class Truco extends HTMLElement
         this.CurrentViewScreen = this.trucoTable;
         this.appendChild(this.CurrentViewScreen)
     }
+    finishGame()
+    {
+        this.removeChild(this.CurrentViewScreen);
+        // this.trucoTable = new TrucoTable(this.newController);
+        this.CurrentViewScreen = this.newGame;
+        this.appendChild(this.CurrentViewScreen)
+    }
 }
 
-// Registrar el componente personalizado para el mazo de 40 cartas
 customElements.define('truco-game', Truco);
 
 export {Truco};

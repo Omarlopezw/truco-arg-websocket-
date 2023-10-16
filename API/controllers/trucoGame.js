@@ -96,6 +96,8 @@ class Truco
 
         let playerOneLatestCard = this.table[this.playerOne.name][this.table[this.playerOne.name].length - 1];
         let playerTwoLatestCard = this.table[this.playerTwo.name][this.table[this.playerTwo.name].length - 1];
+        console.log("playerOneLatestCard. "  + playerOneLatestCard.truco);
+        console.log("playerTwoLatestCard. "  + playerTwoLatestCard.truco);
         if(playerOneLatestCard.truco > playerTwoLatestCard.truco)
         {
 
@@ -120,7 +122,6 @@ class Truco
                 }
                 this.hand.winner = this.playerOne.name;
                 this.hand.state = 'end';
-                // this.playerOneScore+=1;
                 this.hand.playersPoints[this.playerOne.name] = this.playerOneScore;
                 this.hand.playersPoints[this.playerTwo.name] = this.playerTwoScore; 
                 console.log('winner stage 1 mesa: '+ this.hand.winner);
@@ -161,7 +162,6 @@ class Truco
                 }
                 this.hand.winner = this.playerTwo.name;
                 this.hand.state = 'end';
-                this.playerTwoScore+=1;
                 this.hand.playersPoints[this.playerOne.name] = this.playerOneScore;
                 this.hand.playersPoints[this.playerTwo.name] = this.playerTwoScore;                
                 console.log('winner stage 1 mesa: '+ this.hand.winner);

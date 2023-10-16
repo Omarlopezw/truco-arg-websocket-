@@ -173,7 +173,7 @@ let cards = [
         palo: "basto",
         envido: 0,
         truco: 7,
-        img: "../../API/assets/img/1_de_basto.png",
+        img: "../../API/assets/img/12_de_basto.png",
     },
     {
         numero: 12,
@@ -236,7 +236,7 @@ let cards = [
         numero: 3,
         palo: "oro",
         envido: 3,
-        truco: 0,
+        truco: 10,
         img: "../../API/assets/img/3_de_oro.png", 
 
     },

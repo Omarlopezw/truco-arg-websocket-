@@ -146,6 +146,21 @@ class TrucoController
             this.innerView.button.disabled = true;
         }
     }
+    handleNextRound(e) 
+    {
+        // Realiza las acciones necesarias para la ronda
+        this.updateTable(null);
+        this.resetPlayersHand();
+        this.dealCards(e);
+    
+        // Elimina el oyente de eventos "nextRound" después de manejarlo
+        // this.socket.off("nextRound", handleNextRound);
+        // this.socket.off("nextRound", this.handleNextRound);
+        // this.socket.off("nextRound", (e) =>  
+        // {
+        //     this.handleNextRound(e);
+        // })
+    }
     iniciarSocketIO()
     {
         // Iniciar la conexión de Socket.IO
@@ -220,8 +235,8 @@ class TrucoController
         {
             alert('winner: ' + e.winner);
             this.hand = e;
-this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.playersPoints[this.userName];
-            this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e.playersPoints[this.oppName];            
+// this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.playersPoints[this.userName];
+//             this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e.playersPoints[this.oppName];            
 
             if(e.state == 'start')
             {
@@ -229,14 +244,20 @@ this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.pla
             }
 
         })
+        // this.socket.on("nextRound", (e) =>  
+        // {
+        //     this.updateTable(null);
+        //     this.resetPlayersHand();
+
+        //     this.dealCards(e);
+
+        // })
         this.socket.on("nextRound", (e) =>  
         {
-            this.updateTable(null);
-            this.resetPlayersHand();
-
-            this.dealCards(e);
-
+            this.handleNextRound(e);
+            this.socket.off( (e) => {this.handleNextRound()});
         })
+
         this.socket.on("envidoRequest", (e) =>  
         {
             if(e.player == this.oppName)
@@ -258,11 +279,29 @@ this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.pla
             alert('Mis puntos envido ' + e[this.userName])
             alert('Puntos envido de mi oponente ' + e[this.oppName])
         })
+
         this.socket.on("getPlayersScore", (e) =>  
         {
-            this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e[this.userName];
-            this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e[this.oppName];
+            let winner = '';
+
+            if( (e[this.userName] >= 15 ) )
+            {
+
+                winner = this.userName;
+                this.socket.emit("finishGame",{winner: winner});
+            }
+            else if( (e[this.oppName]) >= 15)
+            {
+                winner = this.oppName;
+                this.socket.emit("finishGame",{winner: winner});
+            }
+            else
+            {
+                this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e[this.userName];
+                this.innerView.playerTwoScore.innerText = `Puntos de ${this.oppName}: ` + e[this.oppName];
+            }
         })
+
         this.socket.on("trucoRequest", (e) =>  
         {
             if(e.player == this.oppName)
@@ -288,6 +327,11 @@ this.innerView.playerOneScore.innerText = `Puntos de ${this.userName}: ` + e.pla
             let acceptedTruco = '';
             e.player == this.userName? acceptedTruco = this.oppName : acceptedTruco = this.userName;
             alert('Truco aceptado por player: ' + acceptedTruco);
+        })
+        this.socket.on("finishGame", (e) =>  
+        {
+            alert(`GAME OVER:  ${e.winner} GANA EL JUEGO`);
+            this.innerView.dispatchEvent(new CustomEvent('finishGame', { detail:true }));
         })
 
     }

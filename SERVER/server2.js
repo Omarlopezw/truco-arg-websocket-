@@ -116,7 +116,24 @@ io.on("connection",(socket)=>
                         console.log('winner in server: ' + updatedHand.playersPoints[player2.name]);
                         game.setHand('state','start');
                         game.setHand('truco',undefined);
+
+                        let points = game.getPlayersScore();
+                        let winner = '';
+                        io.emit("getPlayersScore",points);
                         io.emit("compareCards",updatedHand);
+                        if( (points[player1.name] >= 15 ) )
+                        {
+            
+                            winner = player1.name;
+                            io.emit("finishGame",{winner: winner});
+                            // handInitialized = true;
+                        }
+                        else if( (points[player2.name]) >= 15)
+                        {
+                            winner = player2.name;
+                            io.emit("finishGame",{winner: winner});
+                            // handInitialized = true;
+                        }
                     }
                 }
             }
@@ -177,28 +194,9 @@ io.on("connection",(socket)=>
 
         }
     })
-    // socket.on("playing",(e)=>{
-    //     if(e.value=="X"){
-    //         let objToChange=playingArray.find(obj=>obj.p1.p1name===e.name)
-
-    //         objToChange.p1.p1move=e.id
-    //         objToChange.sum++
-    //     }
-    //     else if(e.value=="O"){
-    //         let objToChange=playingArray.find(obj=>obj.p2.p2name===e.name)
-
-    //         objToChange.p2.p2move=e.id
-    //         objToChange.sum++
-    //     }
-
-    //     io.emit("playing",{allPlayers:playingArray})
-
-    // })
-
-    // socket.on("gameOver",(e)=>{
-    //     playingArray=playingArray.filter(obj=>obj.p1.p1name!==e.name)
-    //     console.log(playingArray)
-    //     console.log("lol")
+    // socket.on("finishGame",(e)=>
+    // {
+    //     io.emit("finishGame",e);
     // })
 
     console.log('usuario conectado');

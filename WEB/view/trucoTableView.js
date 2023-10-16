@@ -171,6 +171,9 @@ class TrucoTable extends HTMLElement
                 // Realiza la acción con la carta seleccionada
                 this.request = { index: index, play: 'mesa' };
                 this.innerController.playCard(this.getUsername(), this.request);
+
+                //Remover class selected
+                selectedCard.classList.remove("selected");
             } 
             else 
             {
